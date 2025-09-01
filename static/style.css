@@ -1,0 +1,277 @@
+/* ==========================================================================
+   1. CONFIGURAÇÃO GLOBAL E VARIÁVEIS
+   ========================================================================== */
+:root {
+  --cor-primaria: #007bff;
+  --cor-sucesso: #198754;
+  --cor-perigo: #dc3545;
+  --cor-alerta: #ffc107;
+  --cor-info: #0dcaf0;
+  --cor-cinza-claro: #f8f9fa;
+  --cor-cinza-medio: #e9ecef;
+  --cor-cinza-escuro: #6c757d;
+  --cor-texto: #343a40;
+  --cor-fundo: #146bc3;
+  --sombra-padrao: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --borda-raio: 0.5rem;
+  --transicao-suave: all 0.3s ease-in-out;
+  --fonte-principal: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+}
+
+/* ==========================================================================
+   2. ESTILOS DE BASE (BODY, LINKS, ETC.)
+   ========================================================================== */
+body {
+  background-color: var(--cor-fundo);
+  font-family: var(--fonte-principal);
+  color: var(--cor-texto);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--cor-primaria);
+  text-decoration: none;
+  transition: var(--transicao-suave);
+}
+
+a:hover {
+  text-decoration: underline;
+  filter: brightness(90%);
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cor-cinza-medio);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cor-cinza-escuro);
+}
+
+
+/* ==========================================================================
+   3. COMPONENTES (CARDS, BOTÕES, FORMULÁRIOS, TABELAS)
+   ========================================================================== */
+
+/* --- Cards --- */
+.card {
+  border: none;
+  border-radius: var(--borda-raio);
+  box-shadow: var(--sombra-padrao);
+  transition: var(--transicao-suave);
+  overflow: hidden; /* Garante que os cantos arredondados sejam aplicados a tudo */
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background-color: var(--cor-cinza-claro);
+  font-weight: 600;
+  border-bottom: 1px solid var(--cor-cinza-medio);
+}
+
+.card-footer {
+    background-color: var(--cor-cinza-claro);
+    border-top: 1px solid var(--cor-cinza-medio);
+}
+
+/* --- Botões --- */
+.btn {
+  border-radius: var(--borda-raio);
+  font-weight: 500;
+  transition: var(--transicao-suave);
+  padding: 0.6rem 1.2rem;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Alertas --- */
+.alert {
+  border: none;
+  border-left: 4px solid;
+  border-radius: var(--borda-raio);
+}
+
+.alert-danger {
+  border-left-color: var(--cor-perigo);
+}
+.alert-info {
+  border-left-color: var(--cor-info);
+}
+.alert-warning {
+  border-left-color: var(--cor-alerta);
+}
+
+/* --- Formulários --- */
+.form-control, .form-select {
+  border-radius: var(--borda-raio);
+  padding: 0.75rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+input[type="file"].form-control {
+    border: 2px dashed var(--cor-cinza-medio);
+    background-color: var(--cor-cinza-claro);
+    transition: var(--transicao-suave);
+}
+
+input[type="file"].form-control:hover {
+    border-color: var(--cor-primaria);
+    background-color: #e9f2ff;
+}
+
+/* --- Tabela --- */
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  background-color: var(--cor-cinza-claro);
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table-hover tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.07);
+}
+
+/* --- Badges e Itens de Lista --- */
+.badge {
+  font-size: 0.875em;
+  padding: 0.5em 0.75em;
+}
+
+.add-keyword {
+  cursor: pointer;
+  transition: var(--transicao-suave);
+}
+
+.add-keyword:hover {
+  transform: scale(1.05);
+  filter: brightness(110%);
+}
+
+.list-group-item {
+  border-left: 4px solid transparent;
+  transition: var(--transicao-suave);
+}
+
+.list-group-item:first-child {
+  border-left-color: var(--cor-primaria);
+}
+
+.list-group-item:hover {
+  background-color: var(--cor-cinza-claro) !important;
+  border-left-color: var(--cor-sucesso);
+  transform: translateX(5px);
+}
+
+
+/* ==========================================================================
+   4. ESTADOS E ANIMAÇÕES
+   ========================================================================== */
+
+/* Estado de processamento para o card de upload */
+.card.processing {
+  opacity: 0.8;
+  pointer-events: none;
+  position: relative;
+}
+
+.card.processing::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 10;
+}
+
+/* Animação de fade-in para os elementos principais */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card, .alert {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ==========================================================================
+   5. MEDIA QUERIES (DESIGN RESPONSIVO)
+   ========================================================================== */
+
+/* Para tablets e telas menores */
+@media (max-width: 768px) {
+  body {
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* Faz com que a tabela tenha scroll horizontal em telas pequenas */
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+
+  .table th, .table td {
+    white-space: nowrap;
+    padding: 0.5rem 0.4rem;
+  }
+}
+
+/* Para celulares */
+@media (max-width: 576px) {
+  .d-flex.flex-wrap {
+      flex-direction: column;
+      align-items: stretch !important;
+  }
+
+  .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+  }
+
+  .btn-group {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .btn-group .btn {
+      border-radius: var(--borda-raio) !important;
+  }
+}

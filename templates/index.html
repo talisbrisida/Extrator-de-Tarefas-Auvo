@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Extrator de Tarefas Auvo</title>
+  <link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+  <div class="container vh-100 d-flex align-items-center justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card shadow-sm card-animation">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <i class="bi bi-file-earmark-text text-primary" style="font-size: 3rem;"></i>
+            <h1 class="card-title mt-3 mb-2">Extrator de Tarefas</h1>
+            <p class="text-muted">Selecione o relatório (.csv) do Auvo para encontrar OS que precisam de ação.</p>
+          </div>
+
+          <!-- Mostrar erro se houver -->
+          {% if error %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          {% endif %}
+
+          <!-- Formulário principal -->
+          <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="mb-4">
+              <label for="arquivo_excel" class="form-label">Arquivo CSV do Auvo</label>
+              <input class="form-control form-control-lg" type="file" name="arquivo_excel" id="arquivo_excel"
+                accept=".csv" required>
+              <div class="form-text">Apenas arquivos .csv são aceitos</div>
+            </div>
+
+            <div class="d-grid mb-4">
+              <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                <i class="bi bi-upload me-2"></i>Processar Relatório
+              </button>
+            </div>
+          </form>
+
+          <!-- Links úteis -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <a href="/config" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-gear me-2"></i>Configurar Palavras-chave
+              </a>
+            </div>
+            <div class="col-md-6">
+              <a href="/historico" class="btn btn-outline-info w-100">
+                <i class="bi bi-clock-history me-2"></i>Ver Histórico
+              </a>
+            </div>
+          </div>
+
+          <!-- Informações adicionais -->
+          <div class="mt-4 p-3 bg-light rounded">
+            <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>Como usar:</h6>
+            <ol class="small mb-0">
+              <li>Exporte o relatório do Auvo em formato CSV</li>
+              <li>Selecione o arquivo usando o botão acima</li>
+              <li>Clique em "Processar Relatório"</li>
+              <li>Visualize os resultados e faça o download se necessário</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+
+</html>

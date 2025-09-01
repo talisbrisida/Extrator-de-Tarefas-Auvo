@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Histórico - Extrator de Tarefas Auvo</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+
+                <!-- Cabeçalho -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1><i class="bi bi-clock-history me-2 text-primary"></i>Histórico de Processamentos</h1>
+                        <p class="text-muted mb-0">Últimos arquivos processados pelo sistema</p>
+                    </div>
+                    <a href="/" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+
+                <div class="card shadow-sm">
+                    {% if historico %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul me-2"></i>Últimos {{ historico|length }} processamentos
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for item in historico %}
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="me-auto">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                                        <strong>{{ item.arquivo }}</strong>
+                                    </div>
+                                    <p class="mb-1 text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        Processado em {{ item.data }}
+                                    </p>
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        {{ item.total }} registros analisados
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    {% if item.encontrados > 0 %}
+                                    <span class="badge bg-success rounded-pill fs-6">
+                                        {{ item.encontrados }} tarefas
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary rounded-pill fs-6">
+                                        Nenhuma tarefa
+                                    </span>
+                                    {% endif %}
+                                    <div class="small text-muted mt-1">
+                                        {% if item.total > 0 %}
+                                        {{ "%.1f"|format((item.encontrados / item.total * 100)) }}% de ocorrência
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Estatísticas do histórico -->
+                    <div class="card-footer bg-light">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="small text-muted">Total de Arquivos</div>
+                                <strong>{{ historico|length }}</strong>
+                            </div>
+                            <div class="col-4">
+                                <div class="small text-muted">Total de Tarefas</div>
+                                <strong>{{ historico|sum(attribute='encontrados') }}</strong>
+                            </div>
+                            <div class="col-4">
+                                <div class="small text-muted">Média de Ocorrência</div>
+                                <strong>
+                                    {% set total_registros = historico|sum(attribute='total') %}
+                                    {% set total_encontrados = historico|sum(attribute='encontrados') %}
+                                    {% if total_registros > 0 %}
+                                    {{ "%.1f"|format((total_encontrados / total_registros * 100)) }}%
+                                    {% else %}
+                                    0%
+                                    {% endif %}
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% else %}
+                    <!-- Estado vazio -->
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3 text-muted">Nenhum histórico encontrado</h4>
+                        <p class="text-muted mb-4">
+                            Você ainda não processou nenhum arquivo. O histórico aparecerá aqui após o primeiro
+                            processamento.
+                        </p>
+                        <a href="/" class="btn btn-primary">
+                            <i class="bi bi-upload me-2"></i>Processar Primeiro Arquivo
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Informações adicionais -->
+                {% if historico %}
+                <div class="mt-4">
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle me-2"></i>Sobre o histórico:
+                        </h6>
+                        <ul class="mb-0">
+                            <li>O sistema mantém o histórico dos últimos 10 processamentos</li>
+                            <li>Os dados são armazenados apenas durante sua sessão no navegador</li>
+                            <li>Limpar o cache do navegador apagará o histórico</li>
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{{ url_for('static', filename='js/historico.js') }}"></script>
+</body>
+
+</html>
