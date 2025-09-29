@@ -29,9 +29,21 @@ def criar_links(url):
         return f'<a href="{url}" target="_blank">{url}</a>'
     return url
 
-def processar_csv(file, palavras_chave):
-    """Processa o arquivo CSV e retorna os dados filtrados"""
-    df = pd.read_csv(file, skiprows=5)
+def processar_arquivo(file, palavras_chave):
+    """Processa o arquivo CSV ou Excel e retorna os dados filtrados"""
+    filename = file.filename.lower()
+    
+    # Decide como ler o arquivo com base na extensão
+    if filename.endswith('.csv'):
+        df = pd.read_csv(file, skiprows=5)
+    elif filename.endswith(('.xls', '.xlsx')):
+        # Para arquivos Excel, o pandas pode precisar de um 'engine'
+        # O openpyxl, que já está no requirements.txt, funciona para .xlsx
+        df = pd.read_excel(file, skiprows=5, engine='openpyxl')
+    else:
+        # Se não for um formato suportado, levanta um erro
+        raise ValueError("Formato de arquivo não suportado. Use .csv, .xls ou .xlsx")
+
     regex_busca = '|'.join(palavras_chave)
     
     coluna_descricao = 'Relato'
@@ -100,7 +112,7 @@ def config():
         session['custom_keywords'] = [k.strip() for k in keywords if k.strip()]
         return redirect(url_for('index'))
     
-    current_keywords = session.get('custom_keywords', ['solicitar peça', 'quebrado', 'trocar cabo', 'soldar', 'trocar', 'instalar'])
+    current_keywords = session.get('custom_keywords', ['solicitar peça', 'quebrado', 'quebrada', 'quebrados', 'orçamento', 'danificada', 'danificado', 'danificados', 'danificadas', 'trocar cabo', 'soldar', 'trocar', 'instalar'])
     return render_template('config.html', keywords=', '.join(current_keywords))
 
 @app.route('/historico')
@@ -117,13 +129,15 @@ def upload_file():
     if file.filename == '':
         return redirect(url_for('index', error='Nenhum arquivo selecionado'))
 
-    if not file.filename.lower().endswith('.csv'):
-        return redirect(url_for('index', error='Por favor, selecione um arquivo .csv'))
+    # Permitir mais extensões de arquivo
+    if not file.filename.lower().endswith(('.csv', '.xls', '.xlsx')):
+        return redirect(url_for('index', error='Por favor, selecione um arquivo .csv, .xls ou .xlsx'))
 
     try:
         palavras_chave = session.get('custom_keywords', ['solicitar peça', 'quebrado', 'trocar cabo', 'soldar', 'trocar', 'instalar'])
         
-        df_original, resultado_final = processar_csv(file, palavras_chave)
+        # Usa a nova função que lida com múltiplos formatos
+        df_original, resultado_final = processar_arquivo(file, palavras_chave)
         stats = gerar_estatisticas(df_original, resultado_final, palavras_chave)
         
         # --- MUDANÇA PRINCIPAL AQUI ---
@@ -131,7 +145,7 @@ def upload_file():
         temp_filename = f"{uuid.uuid4().hex}.csv"
         file_path = os.path.join(TEMP_FOLDER, temp_filename)
         
-        # 2. Salvar o DataFrame de resultados nesse arquivo
+        # 2. Salvar o DataFrame de resultados nesse arquivo (sempre como CSV para consistência interna)
         resultado_final.to_csv(file_path, index=False)
         
         # 3. Salvar APENAS o nome do arquivo na sessão (é bem pequeno!)
@@ -185,7 +199,7 @@ def download_excel():
     
     return Response(
         output,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheet.sheet",
         headers={"Content-Disposition": "attachment;filename=relatorio_filtrado.xlsx"}
     )
 
