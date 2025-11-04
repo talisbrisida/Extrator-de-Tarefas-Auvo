@@ -112,7 +112,7 @@ def config():
         session['custom_keywords'] = [k.strip() for k in keywords if k.strip()]
         return redirect(url_for('index'))
     
-    current_keywords = session.get('custom_keywords', ['solicitar peça', 'quebrado', 'quebrada', 'quebrados', 'orçamento', 'danificada', 'danificado', 'danificados', 'danificadas', 'trocar cabo', 'soldar', 'trocar', 'instalar'])
+    current_keywords = session.get('custom_keywords', ['solicitar peça', 'quebrado', 'quebrada', 'quebrados', 'orçamento', 'danificada', 'danificado', 'danificados', 'danificadas', 'trocar cabo', 'soldar', 'trocar', 'instalar', 'orçamento'])
     return render_template('config.html', keywords=', '.join(current_keywords))
 
 @app.route('/historico')
